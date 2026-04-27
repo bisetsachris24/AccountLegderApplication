@@ -10,60 +10,84 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
-
+ * AccountingLedgerApp.java  (Capstone 1 - v7.1 Y)
+ * -------------------------------------------------
+ * The ENTIRE program lives here, except for the Transaction class.
+ *
+ *   main()           ->  shows banner, loads file, opens Home menu
+ *   homeMenu()       ->  D / P / L / X
+ *   ledgerMenu()     ->  A / D / P / R / H
+ *   reportsMenu()    ->  1 / 2 / 3 / 4 / 5 / 0
+ *
+ * The class uses STATIC fields and methods. That means there is only one
+ * "transactions" list and one "scanner" shared by every method. This is the
+ * easiest style to read while you are learning Java.
  */
 public class AccountingLedgerApp {
 
-    // ---- Shared data ----
+    // =========================================================================
+    // SHARED DATA  (static = "belongs to the class, not to one object")
+    // =========================================================================
+
+    /** All the loaded transactions live in this list. */
     static ArrayList<Transaction> transactions = new ArrayList<>();
+
+    /** One Scanner reads input from the keyboard for the whole program. */
     static Scanner scanner = new Scanner(System.in);
+
+    /** Name of the file we read from / write to. */
     static final String FILE_NAME = "transactions.csv";
 
-    // ============================
-    //  MAIN
-    // ============================
+    // =========================================================================
+    // MAIN
+    // =========================================================================
     public static void main(String[] args) {
         printBanner();
-        loadTransactions();   // NEW: read existing data first
-        homeMenu();
+        loadTransactions();   // step 1: read the CSV into memory
+        homeMenu();           // step 2: start the Home menu loop
         scanner.close();
     }
 
+    /** A welcome banner shown once when the program starts. */
     static void printBanner() {
-        System.out.println();
-        System.out.println("=========================================");
-        System.out.println("   ACCOUNTING LEDGER  -  Capstone 1");
-        System.out.println("=========================================\n");
+        System.out.println(" AMANI's LEDGER ");
     }
 
-    // ============================
-    //  FILE I/O   (NEW IN STEP 3)
-    // ============================
+    // =========================================================================
+    // FILE I/O
+    // =========================================================================
+
+    /**
+     * Reads transactions.csv line-by-line and converts each line into a
+     * Transaction object. If the file does not exist yet, we just start with
+     * an empty list (that is fine — the first deposit will create it).
+     */
     static void loadTransactions() {
         File f = new File(FILE_NAME);
         if (!f.exists()) {
-            return;   // first run: nothing to load yet
+            return;
         }
-
+        // try-with-resources auto-closes the reader, even if there's an error.
         try (BufferedReader reader = new BufferedReader(new FileReader(f))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                if (line.isEmpty()) continue;            // skip blank lines
-                if (line.startsWith("date|")) continue;  // skip header row
-
+                if (line.isEmpty()) continue;             // skip blank lines
+                if (line.startsWith("date|")) continue;   // skip header line
                 try {
                     String[] parts = line.split("\\|");
-                    LocalDate date     = LocalDate.parse(parts[0], Transaction.DATE_FORMAT);
-                    LocalTime time     = LocalTime.parse(parts[1], Transaction.TIME_FORMAT);
+                    LocalDate date = LocalDate.parse(parts[0], Transaction.DATE_FORMAT);
+                    LocalTime time = LocalTime.parse(parts[1], Transaction.TIME_FORMAT);
                     String description = parts[2];
                     String vendor      = parts[3];
                     double amount      = Double.parseDouble(parts[4]);
                     transactions.add(new Transaction(date, time, description, vendor, amount));
                 } catch (Exception ex) {
+                    // One bad line shouldn't stop the whole program.
                     System.err.println("Skipped a bad line: " + line);
                 }
             }
@@ -72,6 +96,11 @@ public class AccountingLedgerApp {
         }
     }
 
+    /**
+     * Adds a new Transaction to memory AND appends it as a new line at the
+     * end of the CSV file.  FileWriter(name, true) -> 'true' means APPEND
+     * (otherwise Java would erase the file!).
+     */
     static void saveTransaction(Transaction t) {
         transactions.add(t);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
@@ -82,9 +111,9 @@ public class AccountingLedgerApp {
         }
     }
 
-    // ============================
-    //  HOME MENU
-    // ============================
+    // =========================================================================
+    // HOME MENU
+    // =========================================================================
     static void homeMenu() {
         boolean running = true;
         while (running) {
@@ -100,24 +129,23 @@ public class AccountingLedgerApp {
 
             String choice = scanner.nextLine().trim().toUpperCase();
             switch (choice) {
-                case "D": addDeposit();   break;   // NEW: real method
-                case "P": addPayment();   break;   // NEW: real method
-                case "L":
-                    System.out.println("\n>> [L] Ledger — coming in Step 4!\n");
-                    break;
+                case "D": addDeposit();   break;
+                case "P": addPayment();   break;
+                case "L": ledgerMenu();   break;
                 case "X":
                     running = false;
                     System.out.println("\nGoodbye! Thanks for using the Accounting Ledger.\n");
                     break;
                 default:
-                    System.out.println("\n>> Invalid choice. Pick D, P, L or X.\n");
+                    System.out.println(">> Invalid choice. Pick D, P, L or X.\n");
             }
         }
     }
 
-    // ============================
-    //  ADD DEPOSIT / PAYMENT   (NEW IN STEP 3)
-    // ============================
+    /**
+     * Asks the user for deposit info and saves it.
+     * Deposits keep their POSITIVE sign.
+     */
     static void addDeposit() {
         System.out.println("\n-- Add Deposit --");
         System.out.print("Description: ");
@@ -128,14 +156,19 @@ public class AccountingLedgerApp {
 
         double amount = readPositiveAmount("Amount: ");
 
+        // LocalDateTime.now() = "right now". Split into a date and a time.
         LocalDateTime now = LocalDateTime.now();
         LocalDate date = now.toLocalDate();
-        LocalTime time = now.toLocalTime().withNano(0);
+        LocalTime time = now.toLocalTime().withNano(0);   // throw away nanoseconds
 
         saveTransaction(new Transaction(date, time, description, vendor, amount));
         System.out.println(">> Deposit saved!\n");
     }
 
+    /**
+     * Asks the user for payment info and saves it.
+     * Payments are stored as NEGATIVE numbers, so we multiply by -1.
+     */
     static void addPayment() {
         System.out.println("\n-- Make Payment --");
         System.out.print("Description: ");
@@ -155,9 +188,175 @@ public class AccountingLedgerApp {
         System.out.println(">> Payment saved!\n");
     }
 
-    // ============================
-    //  INPUT HELPER   (NEW IN STEP 3)
-    // ============================
+    // =========================================================================
+    // LEDGER MENU
+    // =========================================================================
+    static void ledgerMenu() {
+        boolean inLedger = true;
+        while (inLedger) {
+            System.out.println("\n╔══════════════════════════════════════════╗");
+            System.out.println("║             LEDGER  MENU                 ║");
+            System.out.println("╠══════════════════════════════════════════╣");
+            System.out.println("║  A)  All                                 ║");
+            System.out.println("║  D)  Deposits                            ║");
+            System.out.println("║  P)  Payments                            ║");
+            System.out.println("║  R)  Reports                             ║");
+            System.out.println("║  H)  Home                                ║");
+            System.out.println("╚══════════════════════════════════════════╝");
+            System.out.print("Enter your choice: ");
+
+            String choice = scanner.nextLine().trim().toUpperCase();
+            switch (choice) {
+                case "A": showAll();          break;
+                case "D": showDeposits();     break;
+                case "P": showPayments();     break;
+                case "R": reportsMenu();      break;
+                case "H": inLedger = false;   break;   // back to Home
+                default:
+                    System.out.println(">> Invalid choice. Pick A, D, P, R or H.\n");
+            }
+        }
+    }
+
+    /** Returns a fresh copy of transactions sorted NEWEST FIRST. */
+    static ArrayList<Transaction> getAllNewestFirst() {
+        ArrayList<Transaction> copy = new ArrayList<>(transactions);
+        copy.sort(Comparator
+                .comparing(Transaction::getDate)
+                .thenComparing(Transaction::getTime)
+                .reversed());
+        return copy;
+    }
+
+    static void showAll() {
+        printList("All Entries", getAllNewestFirst());
+    }
+
+    static void showDeposits() {
+        ArrayList<Transaction> deposits = new ArrayList<>();
+        for (Transaction t : getAllNewestFirst()) {
+            if (t.getAmount() > 0) deposits.add(t);
+        }
+        printList("Deposits", deposits);
+    }
+
+    static void showPayments() {
+        ArrayList<Transaction> payments = new ArrayList<>();
+        for (Transaction t : getAllNewestFirst()) {
+            if (t.getAmount() < 0) payments.add(t);
+        }
+        printList("Payments", payments);
+    }
+
+    /**
+     * Prints a list of transactions as a nice table.
+     * Reused by every screen that shows a list.
+     */
+    static void printList(String title, ArrayList<Transaction> list) {
+        System.out.println();
+        System.out.println("====================  " + title + "  ====================");
+        System.out.printf("%-12s  %-8s  %-28s  %-15s  %10s%n",
+                "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
+        System.out.println("-----------------------------------------------------------------------------------");
+        if (list.isEmpty()) {
+            System.out.println("  (no transactions found)");
+        } else {
+            for (Transaction t : list) System.out.println(t);
+        }
+        System.out.println("===================================================================================\n");
+    }
+
+    // =========================================================================
+    // REPORTS MENU
+    // =========================================================================
+    static void reportsMenu() {
+        boolean inReports = true;
+        while (inReports) {
+            System.out.println("\n╔══════════════════════════════════════════╗");
+            System.out.println("║            REPORTS  MENU                 ║");
+            System.out.println("╠══════════════════════════════════════════╣");
+            System.out.println("║  1)  Month To Date                       ║");
+            System.out.println("║  2)  Previous Month                      ║");
+            System.out.println("║  3)  Year To Date                        ║");
+            System.out.println("║  4)  Previous Year                       ║");
+            System.out.println("║  5)  Search by Vendor                    ║");
+            System.out.println("║  0)  Back                                ║");
+            System.out.println("╚══════════════════════════════════════════╝");
+            System.out.print("Enter your choice: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1": monthToDate();      break;
+                case "2": previousMonth();    break;
+                case "3": yearToDate();       break;
+                case "4": previousYear();     break;
+                case "5": vendorSearch();     break;
+                case "0": inReports = false;  break;
+                default:
+                    System.out.println(">> Invalid choice. Pick 0-5.\n");
+            }
+        }
+    }
+
+    /** Returns transactions whose date is between start and end (INCLUSIVE). */
+    static ArrayList<Transaction> filterByDate(LocalDate start, LocalDate end) {
+        ArrayList<Transaction> result = new ArrayList<>();
+        for (Transaction t : getAllNewestFirst()) {
+            LocalDate d = t.getDate();
+            if (d.isBefore(start) || d.isAfter(end)) continue;
+            result.add(t);
+        }
+        return result;
+    }
+
+    static void monthToDate() {
+        LocalDate today = LocalDate.now();
+        LocalDate start = today.withDayOfMonth(1);
+        printList("Month To Date  (" + start + " → " + today + ")", filterByDate(start, today));
+    }
+
+    static void previousMonth() {
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfThisMonth = today.withDayOfMonth(1);
+        LocalDate lastOfPrevMonth  = firstOfThisMonth.minusDays(1);
+        LocalDate firstOfPrevMonth = lastOfPrevMonth.withDayOfMonth(1);
+        printList("Previous Month (" + firstOfPrevMonth + " → " + lastOfPrevMonth + ")",
+                filterByDate(firstOfPrevMonth, lastOfPrevMonth));
+    }
+
+    static void yearToDate() {
+        LocalDate today = LocalDate.now();
+        LocalDate start = today.withDayOfYear(1);   // Jan 1 of this year
+        printList("Year To Date  (" + start + " → " + today + ")", filterByDate(start, today));
+    }
+
+    static void previousYear() {
+        int year = LocalDate.now().getYear() - 1;
+        LocalDate start = LocalDate.of(year, 1, 1);
+        LocalDate end   = LocalDate.of(year, 12, 31);
+        printList("Previous Year (" + year + ")", filterByDate(start, end));
+    }
+
+    static void vendorSearch() {
+        System.out.print("Vendor name (partial match, case-insensitive): ");
+        String query = scanner.nextLine().trim();
+        if (query.isEmpty()) {
+            System.out.println(">> No vendor name entered.\n");
+            return;
+        }
+        ArrayList<Transaction> result = new ArrayList<>();
+        String q = query.toLowerCase();
+        for (Transaction t : getAllNewestFirst()) {
+            if (t.getVendor().toLowerCase().contains(q)) result.add(t);
+        }
+        printList("Vendor: \"" + query + "\"", result);
+    }
+
+    // =========================================================================
+    // INPUT HELPERS  (defensive against bad user input)
+    // =========================================================================
+
+    /** Keeps prompting until the user types a valid number greater than 0. */
     static double readPositiveAmount(String prompt) {
         while (true) {
             System.out.print(prompt);
