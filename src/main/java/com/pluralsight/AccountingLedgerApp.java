@@ -13,23 +13,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-/**
- * AccountingLedgerApp.java  (Capstone 1 - v7.1 Y)
- * -------------------------------------------------
- * The ENTIRE program lives here, except for the Transaction class.
- *
- *   main()           ->  shows banner, loads file, opens Home menu
- *   homeMenu()       ->  D / P / L / X
- *   ledgerMenu()     ->  A / D / P / R / H
- *   reportsMenu()    ->  1 / 2 / 3 / 4 / 5 / 0
- *
- * The class uses STATIC fields and methods. That means there is only one
- * "transactions" list and one "scanner" shared by every method. This is the
- * easiest style to read while you are learning Java.
- */
+
 public class AccountingLedgerApp {
 
-    // =========================================================================
+
     // SHARED DATA  (static = "belongs to the class, not to one object")
     // =========================================================================
 
@@ -40,7 +27,7 @@ public class AccountingLedgerApp {
     static Scanner scanner = new Scanner(System.in);
 
     /** Name of the file we read from / write to. */
-    static final String FILE_NAME = "transactions.csv";
+    static final String amaniFile = "transactions.csv";
 
     // =========================================================================
     // MAIN
@@ -67,7 +54,7 @@ public class AccountingLedgerApp {
      * an empty list (that is fine — the first deposit will create it).
      */
     static void loadTransactions() {
-        File f = new File(FILE_NAME);
+        File f = new File(amaniFile);
         if (!f.exists()) {
             return;
         }
@@ -103,7 +90,7 @@ public class AccountingLedgerApp {
      */
     static void saveTransaction(Transaction t) {
         transactions.add(t);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(amaniFile, true))) {
             writer.write(t.toCsvLine());
             writer.newLine();
         } catch (IOException e) {
