@@ -16,8 +16,6 @@ import java.util.Scanner;
 
 public class AccountingLedgerApp {
 
-
-
     // All the loaded transactions live in this list. */
     static ArrayList<Transaction> transactions = new ArrayList<>();
 
@@ -25,7 +23,7 @@ public class AccountingLedgerApp {
     static Scanner scanner = new Scanner(System.in);
 
     /** Name of the file we read from / write to. */
-    static final String amaniFile = "transactions.csv";
+    static final String amaniFile = "src/main/resources/transactions.csv";
 
 
     // MAIN this is where Java run, this is where everything starts
