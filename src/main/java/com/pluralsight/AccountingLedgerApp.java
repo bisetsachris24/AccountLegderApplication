@@ -17,8 +17,6 @@ import java.util.Scanner;
 public class AccountingLedgerApp {
 
 
-    // SHARED DATA  (static = "belongs to the class, not to one object")
-
 
     // All the loaded transactions live in this list. */
     static ArrayList<Transaction> transactions = new ArrayList<>();
@@ -53,6 +51,7 @@ public class AccountingLedgerApp {
      */
     static void loadTransactions() {
         File f = new File(amaniFile);
+
         if (!f.exists()) {
             return;
         }
@@ -73,7 +72,7 @@ public class AccountingLedgerApp {
                     transactions.add(new Transaction(date, time, description, vendor, amount));
                 } catch (Exception ex) {
                     // One bad line shouldn't stop the whole program.
-                    System.err.println("Skipped a bad line: " + line);
+                    System.out.print("Skipped a bad line: " + line);
                 }
             }
         } catch (IOException e) {
@@ -251,7 +250,7 @@ public class AccountingLedgerApp {
 
 
     // REPORTS MENU
-    // =========================================================================
+
     static void reportsMenu() {
         boolean inReports = true;
         while (inReports) {
