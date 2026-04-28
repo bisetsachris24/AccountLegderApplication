@@ -7,8 +7,8 @@ import java.time.format.DateTimeFormatter;
 
 public class Transaction {
 
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
+    public static final DateTimeFormatter ledgerdateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static final DateTimeFormatter ledgertimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private LocalDate date;
     private LocalTime time;
@@ -24,7 +24,7 @@ public class Transaction {
         this.vendor = vendor;
         this.amount = amount;
     }
-
+    // created getter using constructor
     public LocalDate getDate()
     { return date; }
     public LocalTime getTime()
@@ -37,11 +37,11 @@ public class Transaction {
     { return amount; }
 
     /** Pretty one-line display for printing on screen. */
-    @Override
+
     public String toString() {
         return String.format("%-12s  %-8s  %-28s  %-15s  %10.2f",
-                date.format(DATE_FORMAT),
-                time.format(TIME_FORMAT),
+                date.format(ledgerdateFormater),
+                time.format(ledgertimeFormat),
                 description,
                 vendor,
                 amount);
@@ -52,8 +52,8 @@ public class Transaction {
      * Example: 2026-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
      */
     public String toCsvLine() {
-        return date.format(DATE_FORMAT) + "|"
-                + time.format(TIME_FORMAT) + "|"
+        return date.format(ledgerdateFormater) + "|"
+                + time.format(ledgertimeFormat) + "|"
                 + description + "|"
                 + vendor + "|"
                 + String.format("%.2f", amount);

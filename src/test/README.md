@@ -89,7 +89,7 @@ This project demonstrates real-world backend development concepts using core Jav
 - File Handling (Read/Write)
 - Exception Handling
 - Data Structures (`ArrayList`)
-- Sorting with `Comparator`
+- Sorting with `Comparator` 
 - Input Validation
 - Date/Time Manipulation
 

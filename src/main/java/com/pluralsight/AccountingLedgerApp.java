@@ -18,9 +18,9 @@ public class AccountingLedgerApp {
 
 
     // SHARED DATA  (static = "belongs to the class, not to one object")
-    // =========================================================================
 
-    /** All the loaded transactions live in this list. */
+
+    // All the loaded transactions live in this list. */
     static ArrayList<Transaction> transactions = new ArrayList<>();
 
     /** One Scanner reads input from the keyboard for the whole program. */
@@ -29,9 +29,9 @@ public class AccountingLedgerApp {
     /** Name of the file we read from / write to. */
     static final String amaniFile = "transactions.csv";
 
-    // =========================================================================
-    // MAIN
-    // =========================================================================
+
+    // MAIN this is where Java run, this is where everything starts
+
     public static void main(String[] args) {
         printBanner();
         loadTransactions();   // step 1: read the CSV into memory
@@ -44,8 +44,6 @@ public class AccountingLedgerApp {
         System.out.println(" AMANI's LEDGER ");
     }
 
-    // =========================================================================
-    // FILE I/O
     // =========================================================================
 
     /**
@@ -67,8 +65,8 @@ public class AccountingLedgerApp {
                 if (line.startsWith("date|")) continue;   // skip header line
                 try {
                     String[] parts = line.split("\\|");
-                    LocalDate date = LocalDate.parse(parts[0], Transaction.DATE_FORMAT);
-                    LocalTime time = LocalTime.parse(parts[1], Transaction.TIME_FORMAT);
+                    LocalDate date = LocalDate.parse(parts[0], Transaction.ledgerdateFormater);
+                    LocalTime time = LocalTime.parse(parts[1], Transaction.ledgertimeFormat);
                     String description = parts[2];
                     String vendor      = parts[3];
                     double amount      = Double.parseDouble(parts[4]);
@@ -83,11 +81,7 @@ public class AccountingLedgerApp {
         }
     }
 
-    /**
-     * Adds a new Transaction to memory AND appends it as a new line at the
-     * end of the CSV file.  FileWriter(name, true) -> 'true' means APPEND
-     * (otherwise Java would erase the file!).
-     */
+
     static void saveTransaction(Transaction t) {
         transactions.add(t);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(amaniFile, true))) {
@@ -98,7 +92,7 @@ public class AccountingLedgerApp {
         }
     }
 
-    // =========================================================================
+
     // HOME MENU
     // =========================================================================
     static void homeMenu() {
@@ -116,9 +110,12 @@ public class AccountingLedgerApp {
 
             String choice = scanner.nextLine().trim().toUpperCase();
             switch (choice) {
-                case "D": addDeposit();   break;
-                case "P": addPayment();   break;
-                case "L": ledgerMenu();   break;
+                case "D": addDeposit();
+                break;
+                case "P": addPayment();
+                break;
+                case "L": ledgerMenu();
+                break;
                 case "X":
                     running = false;
                     System.out.println("\nGoodbye! Thanks for using the Accounting Ledger.\n");
@@ -129,10 +126,7 @@ public class AccountingLedgerApp {
         }
     }
 
-    /**
-     * Asks the user for deposit info and saves it.
-     * Deposits keep their POSITIVE sign.
-     */
+
     static void addDeposit() {
         System.out.println("\n-- Add Deposit --");
         System.out.print("Description: ");
@@ -152,10 +146,7 @@ public class AccountingLedgerApp {
         System.out.println(">> Deposit saved!\n");
     }
 
-    /**
-     * Asks the user for payment info and saves it.
-     * Payments are stored as NEGATIVE numbers, so we multiply by -1.
-     */
+
     static void addPayment() {
         System.out.println("\n-- Make Payment --");
         System.out.print("Description: ");
@@ -165,7 +156,7 @@ public class AccountingLedgerApp {
         String vendor = scanner.nextLine().trim();
 
         double amount = readPositiveAmount("Amount: ");
-        amount = -amount;   // flip the sign
+        amount = -amount;   // change the sign
 
         LocalDateTime now = LocalDateTime.now();
         saveTransaction(new Transaction(
@@ -194,11 +185,16 @@ public class AccountingLedgerApp {
 
             String choice = scanner.nextLine().trim().toUpperCase();
             switch (choice) {
-                case "A": showAll();          break;
-                case "D": showDeposits();     break;
-                case "P": showPayments();     break;
-                case "R": reportsMenu();      break;
-                case "H": inLedger = false;   break;   // back to Home
+                case "A": showAll();
+                break;
+                case "D": showDeposits();
+                break;
+                case "P": showPayments();
+                break;
+                case "R": reportsMenu();
+                break;
+                case "H": inLedger = false;
+                break;   // back to Home
                 default:
                     System.out.println(">> Invalid choice. Pick A, D, P, R or H.\n");
             }
@@ -253,7 +249,7 @@ public class AccountingLedgerApp {
         System.out.println("===================================================================================\n");
     }
 
-    // =========================================================================
+
     // REPORTS MENU
     // =========================================================================
     static void reportsMenu() {
@@ -273,12 +269,18 @@ public class AccountingLedgerApp {
 
             String choice = scanner.nextLine().trim();
             switch (choice) {
-                case "1": monthToDate();      break;
-                case "2": previousMonth();    break;
-                case "3": yearToDate();       break;
-                case "4": previousYear();     break;
-                case "5": vendorSearch();     break;
-                case "0": inReports = false;  break;
+                case "1": monthToDate();
+                break;
+                case "2": previousMonth();
+                break;
+                case "3": yearToDate();
+                break;
+                case "4": previousYear();
+                break;
+                case "5": vendorSearch();
+                break;
+                case "0": inReports = false;
+                break;
                 default:
                     System.out.println(">> Invalid choice. Pick 0-5.\n");
             }
@@ -339,9 +341,8 @@ public class AccountingLedgerApp {
         printList("Vendor: \"" + query + "\"", result);
     }
 
-    // =========================================================================
-    // INPUT HELPERS  (defensive against bad user input)
-    // =========================================================================
+
+
 
     /** Keeps prompting until the user types a valid number greater than 0. */
     static double readPositiveAmount(String prompt) {
