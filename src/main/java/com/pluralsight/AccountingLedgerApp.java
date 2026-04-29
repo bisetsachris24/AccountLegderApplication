@@ -40,13 +40,7 @@ public class AccountingLedgerApp {
         System.out.println(" AMANI's LEDGER ");
     }
 
-    // =========================================================================
 
-    /**
-     * Reads transactions.csv line-by-line and converts each line into a
-     * Transaction object. If the file does not exist yet, we just start with
-     * an empty list (that is fine — the first deposit will create it).
-     */
     static void loadTransactions() {
         File f = new File(amaniFile);
 
@@ -89,12 +83,13 @@ public class AccountingLedgerApp {
         }
     }
 
-
     // HOME MENU
     // =========================================================================
     static void homeMenu() {
         boolean running = true;
         while (running) {
+
+
             System.out.println("╔══════════════════════════════════════════╗");
             System.out.println("║              HOME  MENU                  ║");
             System.out.println("╠══════════════════════════════════════════╣");
@@ -284,7 +279,7 @@ public class AccountingLedgerApp {
         }
     }
 
-    /** Returns transactions whose date is between start and end (INCLUSIVE). */
+    /** Returns transactions whose date is between start and end */
     static ArrayList<Transaction> filterByDate(LocalDate start, LocalDate end) {
         ArrayList<Transaction> result = new ArrayList<>();
         for (Transaction t : getAllNewestFirst()) {
