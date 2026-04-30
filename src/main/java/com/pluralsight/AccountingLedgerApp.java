@@ -19,10 +19,12 @@ public class AccountingLedgerApp {
     // All the loaded transactions live in this list. */
     static ArrayList<Transaction> transactions = new ArrayList<>();
 
-    /** One Scanner reads input from the keyboard for the whole program. */
+    //** One Scanner reads input from the keyboard for the whole program.
     static Scanner scanner = new Scanner(System.in);
 
-    /** Name of the file we read from / write to. */
+    /**
+     * Name of the file we read from / write to.
+     */
     static final String amaniFile = "src/main/resources/transactions.csv";
 
 
@@ -35,7 +37,9 @@ public class AccountingLedgerApp {
         scanner.close();
     }
 
-    /** A welcome banner shown once when the program starts. */
+    /**
+     * A welcome banner shown once when the program starts.
+     */
     static void printBanner() {
         System.out.println(" AMANI's LEDGER ");
     }
@@ -69,7 +73,7 @@ public class AccountingLedgerApp {
                 // skip it so it is not treated as actual transaction data// skip blank lines
                 if (line.startsWith("date|")) continue;// skip header line
                 // Wrap parsing logic in a try-catch block to prevent the program
-            // from crashing if a line is malformed or contains invalid data
+                // from crashing if a line is malformed or contains invalid data
                 try {
                     // Split the line into parts using "|" as the delimiter
                     // Each part represents a field: date, time, description, vendor, amount
@@ -80,9 +84,9 @@ public class AccountingLedgerApp {
                     LocalTime time = LocalTime.parse(parts[1], Transaction.ledgertimeFormat);
                     // Extract description and vendor as plain strings
                     String description = parts[2];
-                    String vendor      = parts[3];
+                    String vendor = parts[3];
                     // Convert the amount from String to double
-                    double amount      = Double.parseDouble(parts[4]);
+                    double amount = Double.parseDouble(parts[4]);
                     // Create a new Transaction object using parsed data
                     // and add it to the in-memory transactions list
                     transactions.add(new Transaction(date, time, description, vendor, amount));
@@ -146,14 +150,17 @@ public class AccountingLedgerApp {
             // Use switch-case to handle different user menu selections
             switch (choice) {
                 // Call method to add a deposit transaction
-                case "D": addDeposit();
-                break;
+                case "D":
+                    addDeposit();
+                    break;
                 // Call method to record a payment (expense)
-                case "P": addPayment();
-                break;
+                case "P":
+                    addPayment();
+                    break;
                 // Navigate to the ledger menu (view transactions and reports)
-                case "L": ledgerMenu();
-                break;
+                case "L":
+                    ledgerMenu();
+                    break;
 
                 case "X":
                     // Set running to false to exit the loop and terminate the program
@@ -241,28 +248,35 @@ public class AccountingLedgerApp {
             String choice = scanner.nextLine().trim().toUpperCase();
             switch (choice) {
                 // Display all transactions (both deposits and payments)
-                case "A": showAll();
-                break;
+                case "A":
+                    showAll();
+                    break;
                 // Display only deposit transactions (positive amounts)
-                case "D": showDeposits();
-                break;
+                case "D":
+                    showDeposits();
+                    break;
                 // Display only payment transactions (negative amounts)
-                case "P": showPayments();
-                break;
+                case "P":
+                    showPayments();
+                    break;
                 // Navigate to the Reports menu for filtered views
 
-                case "R": reportsMenu();
-                break;
+                case "R":
+                    reportsMenu();
+                    break;
                 // Exit the Ledger menu and return to the Home menu
-                case "H": inLedger = false;
-                break;   // back to Home
+                case "H":
+                    inLedger = false;
+                    break;   // back to Home
                 default:
                     System.out.println(">> Invalid choice. Pick A, D, P, R or H.\n");
             }
         }
     }
 
-    /** Returns a fresh copy of transactions sorted NEWEST FIRST. */
+    /**
+     * Returns a fresh copy of transactions sorted NEWEST FIRST.
+     */
     // Creates and returns a new list of transactions sorted from newest to oldest
     static ArrayList<Transaction> getAllNewestFirst() {
         // Create a copy of the original transactions list
@@ -277,13 +291,15 @@ public class AccountingLedgerApp {
         // Return the sorted copy
         return copy;
     }
-// Displays all transactions in a formatted table
+
+    // Displays all transactions in a formatted table
     static void showAll() {
         // Call printList method to display all transactions
         // "All Entries" is the title shown above the table
         printList("All Entries", getAllNewestFirst());
     }
-// Displays only deposit transactions (transactions with positive amounts)
+
+    // Displays only deposit transactions (transactions with positive amounts)
     static void showDeposits() {
         // Create a new list to store filtered deposit transactions
         ArrayList<Transaction> deposits = new ArrayList<>();
@@ -295,7 +311,8 @@ public class AccountingLedgerApp {
         }
         printList("Deposits", deposits);
     }
-// // Displays only payment transactions (transactions with negative amounts)
+
+    // // Displays only payment transactions (transactions with negative amounts)
     static void showPayments() {
         // Create a new list to store only payment (expense) transactions
 
@@ -310,18 +327,29 @@ public class AccountingLedgerApp {
         printList("Payments", payments);
     }
 
-
+    // Displays a list of transactions in a clean, formatted table
+// This method is reusable for all views (All, Deposits, Payments, Reports)
     static void printList(String title, ArrayList<Transaction> list) {
+        // Print a blank line for spacing
         System.out.println();
+        // Print the title of the section (e.g., "Deposits", "Payments")
         System.out.println("====================  " + title + "  ====================");
+        // Print column headers with fixed-width formatting for alignment
+        // %-12s = left-aligned string with width 12, etc.
         System.out.printf("%-12s  %-8s  %-28s  %-15s  %10s%n",
                 "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
         System.out.println("-----------------------------------------------------------------------------------");
+        // Check if the list is empty
         if (list.isEmpty()) {
+
+            // Inform the user that no transactions were found
             System.out.println("  (no transactions found)");
         } else {
+            // Loop through each transaction and print it
+            // The toString() method in Transaction class formats each row
             for (Transaction t : list) System.out.println(t);
         }
+        // print closing line
         System.out.println("===================================================================================\n");
     }
 
@@ -342,69 +370,108 @@ public class AccountingLedgerApp {
             System.out.println("║  0)  Back                                ║");
             System.out.println("╚══════════════════════════════════════════╝");
             System.out.print("Enter your choice: ");
-
+// Read user input for reports menu selection
+// trim() removes extra spaces (no need for toUpperCase since input is numeric)
             String choice = scanner.nextLine().trim();
+            // Use switch-case to handle different report options
             switch (choice) {
-                case "1": monthToDate();
-                break;
-                case "2": previousMonth();
-                break;
-                case "3": yearToDate();
-                break;
-                case "4": previousYear();
-                break;
-                case "5": vendorSearch();
-                break;
-                case "0": inReports = false;
-                break;
+                case "1":
+                    // Display transactions from the beginning of the current month to today
+                    monthToDate();
+                    break;
+                case "2":
+                    // Display transactions from the previous month
+                    previousMonth();
+                    break;
+                case "3":
+                    yearToDate();
+                    break;
+                case "4":
+                    previousYear();
+                    break;
+                case "5":
+                    vendorSearch();
+                    break;
+                case "0":
+                    inReports = false;
+                    break;
                 default:
-                    System.out.println(">> Invalid choice. Pick 0-5.\n");
+                    System.out.println(">> NO buenoooo Pick 0-5.\n");
             }
         }
     }
 
-    /** Returns transactions whose date is between start and end */
+    /**
+     * Returns transactions whose date is between start and end
+     */
+    // Filters transactions based on a date range (inclusive)
+// Returns only transactions whose date falls between start and end
     static ArrayList<Transaction> filterByDate(LocalDate start, LocalDate end) {
+        // Create a list to store filtered transactions
         ArrayList<Transaction> result = new ArrayList<>();
+        // Loop through all transactions sorted from newest to oldest
         for (Transaction t : getAllNewestFirst()) {
+            // Get the date of the current transaction
             LocalDate d = t.getDate();
+            // Skip this transaction if it is outside the date range
+            // (before the start date OR after the end date)
             if (d.isBefore(start) || d.isAfter(end)) continue;
+            // If the date is within the range, add it to the result list
             result.add(t);
         }
         return result;
     }
 
     static void monthToDate() {
+        // Get today's date
         LocalDate today = LocalDate.now();
+        // Set the start date to the first day of the current month
+        // Example: if today is May 1 → start becomes May 1
         LocalDate start = today.withDayOfMonth(1);
+        // Filter transactions within the date range and display them
+        // The title also shows the date range for clarity
         printList("Month To Date  (" + start + " → " + today + ")", filterByDate(start, today));
     }
 
     static void previousMonth() {
         LocalDate today = LocalDate.now();
+        // Get the first day of the current month
         LocalDate firstOfThisMonth = today.withDayOfMonth(1);
-        LocalDate lastOfPrevMonth  = firstOfThisMonth.minusDays(1);
+        // Subtract one day to get the last day of the previous month
+        // Example: if today is May 10 → this becomes April 30
+        LocalDate lastOfPrevMonth = firstOfThisMonth.minusDays(1);
+        // Get the first day of the previous month
+        // Example: April 30 → becomes April 1
         LocalDate firstOfPrevMonth = lastOfPrevMonth.withDayOfMonth(1);
+        // Filter transactions within the previous month date range and display them
         printList("Previous Month (" + firstOfPrevMonth + " → " + lastOfPrevMonth + ")",
                 filterByDate(firstOfPrevMonth, lastOfPrevMonth));
     }
 
     static void yearToDate() {
         LocalDate today = LocalDate.now();
-        LocalDate start = today.withDayOfYear(1);   // Jan 1 of this year
+        // Set the start date to January 1st of the current year
+        // withDayOfYear(1) automatically sets the date to the first day of the year
+        LocalDate start = today.withDayOfYear(1);// Jan 1 of this year
+        // Filter transactions within the date range and display them
+        // The title includes the date range for clarity
         printList("Year To Date  (" + start + " → " + today + ")", filterByDate(start, today));
     }
 
     static void previousYear() {
         int year = LocalDate.now().getYear() - 1;
+        // Create the start date: January 1st of the previous year
         LocalDate start = LocalDate.of(year, 1, 1);
-        LocalDate end   = LocalDate.of(year, 12, 31);
+        // Create the end date: December 31st of the previous year
+        LocalDate end = LocalDate.of(year, 12, 31);
         printList("Previous Year (" + year + ")", filterByDate(start, end));
     }
 
     static void vendorSearch() {
         System.out.print("Vendor name (partial match, case-insensitive): ");
+        // Read user input and remove extra spaces
         String query = scanner.nextLine().trim();
+        // Check if the user entered nothing
         if (query.isEmpty()) {
             System.out.println(">> No vendor name entered.\n");
             return;
@@ -418,9 +485,9 @@ public class AccountingLedgerApp {
     }
 
 
-
-
-    /** Keeps prompting until the user types a valid number greater than 0. */
+    /**
+     * Keeps prompting until the user types a valid number greater than 0.
+     */
     static double readPositiveAmount(String prompt) {
         while (true) {
             System.out.print(prompt);
