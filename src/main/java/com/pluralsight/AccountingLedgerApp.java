@@ -474,13 +474,19 @@ public class AccountingLedgerApp {
         // Check if the user entered nothing
         if (query.isEmpty()) {
             System.out.println(">> No vendor name entered.\n");
+            // Exit the method early to avoid unnecessary processing
             return;
         }
         ArrayList<Transaction> result = new ArrayList<>();
         String q = query.toLowerCase();
         for (Transaction t : getAllNewestFirst()) {
-            if (t.getVendor().toLowerCase().contains(q)) result.add(t);
+            // Convert vendor name to lowercase and check if it contains the search query
+            // This allows partial matching (e.g., "ama" matches "Amazon")
+            if (t.getVendor().toLowerCase().contains(q))
+                // Add matching transaction to the result list
+                result.add(t);
         }
+        // Display the filtered results with a title showing the search query
         printList("Vendor: \"" + query + "\"", result);
     }
 
@@ -488,18 +494,26 @@ public class AccountingLedgerApp {
     /**
      * Keeps prompting until the user types a valid number greater than 0.
      */
+    // Prompts the user until they enter a valid positive number
+// This method ensures input is numeric and greater than 0
     static double readPositiveAmount(String prompt) {
+        // Infinite loop that continues until valid input is entered
         while (true) {
             System.out.print(prompt);
             String raw = scanner.nextLine().trim();
             try {
+                // Attempt to convert the input string to a double
                 double value = Double.parseDouble(raw);
+                // Check if the value is less than or equal to zero
                 if (value <= 0) {
+                    // Inform the user that only positive values are allowed
                     System.out.println(">> Amount must be greater than 0.");
-                    continue;
+                    continue;  // Continue the loop to ask again
                 }
+                // If valid it will return the value
                 return value;
             } catch (NumberFormatException e) {
+                // Handle invalid input (non-numeric values)
                 System.out.println(">> That's not a valid number. Try again.");
             }
         }

@@ -7,15 +7,19 @@ import java.time.format.DateTimeFormatter;
 
 public class Transaction {
 
+    // Formatter used to standardize how dates are displayed and stored
     public static final DateTimeFormatter ledgerdateFormater = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    public static final DateTimeFormatter ledgertimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+    // Formatter used to standardize time format (24-hour format)
+    public static final DateTimeFormatter ledgertimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+    // Each transaction has these attributes
     private LocalDate date;
     private LocalTime time;
     private String description;
     private String vendor;
     private double amount;
-
+   // CONSTRUCTOR
+    // Used to create a new Transaction object with all values
     public Transaction(LocalDate date, LocalTime time, String description,
                        String vendor, double amount) {
         this.date = date;
@@ -25,6 +29,8 @@ public class Transaction {
         this.amount = amount;
     }
     // created getter using constructor
+    // Used to safely access private fields from outside the class
+
     public LocalDate getDate()
     { return date; }
     public LocalTime getTime()
@@ -37,7 +43,8 @@ public class Transaction {
     { return amount; }
 
     /** Pretty one-line display for printing on screen. */
-
+    // toString METHOD
+    // Used to display transaction in a formatted table row
     public String toString() {
         return String.format("%-12s  %-8s  %-28s  %-15s  %10.2f",
                 date.format(ledgerdateFormater),
@@ -51,7 +58,9 @@ public class Transaction {
      * Builds the pipe-delimited line we save to transactions.csv.
      * Example: 2026-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
      */
+    // Converts a Transaction object into a string for file storage
     public String toCsvLine() {
+        // Pipe-delimited format used in transactions.csv
         return date.format(ledgerdateFormater) + "|"
                 + time.format(ledgertimeFormat) + "|"
                 + description + "|"
