@@ -42,7 +42,7 @@ public class Transaction {
     public double    getAmount()
     { return amount; }
 
-    /** Pretty one-line display for printing on screen. */
+
     // toString METHOD
     // Used to display transaction in a formatted table row
     public String toString() {
@@ -54,10 +54,7 @@ public class Transaction {
                 amount);
     }
 
-    /**
-     * Builds the pipe-delimited line we save to transactions.csv.
-     * Example: 2026-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
-     */
+
     // Converts a Transaction object into a string for file storage
     public String toCsvLine() {
         // Pipe-delimited format used in transactions.csv

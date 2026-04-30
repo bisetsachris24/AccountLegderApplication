@@ -274,9 +274,7 @@ public class AccountingLedgerApp {
         }
     }
 
-    /**
-     * Returns a fresh copy of transactions sorted NEWEST FIRST.
-     */
+
     // Creates and returns a new list of transactions sorted from newest to oldest
     static ArrayList<Transaction> getAllNewestFirst() {
         // Create a copy of the original transactions list
@@ -401,9 +399,7 @@ public class AccountingLedgerApp {
         }
     }
 
-    /**
-     * Returns transactions whose date is between start and end
-     */
+
     // Filters transactions based on a date range (inclusive)
 // Returns only transactions whose date falls between start and end
     static ArrayList<Transaction> filterByDate(LocalDate start, LocalDate end) {
@@ -491,9 +487,7 @@ public class AccountingLedgerApp {
     }
 
 
-    /**
-     * Keeps prompting until the user types a valid number greater than 0.
-     */
+
     // Prompts the user until they enter a valid positive number
 // This method ensures input is numeric and greater than 0
     static double readPositiveAmount(String prompt) {
