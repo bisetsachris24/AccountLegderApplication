@@ -22,9 +22,8 @@ public class AccountingLedgerApp {
     //** One Scanner reads input from the keyboard for the whole program.
     static Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Name of the file we read from / write to.
-     */
+    //Name of the file we read from / write to.
+
     static final String amaniFile = "src/main/resources/transactions.csv";
 
 
