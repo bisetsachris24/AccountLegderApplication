@@ -26,7 +26,6 @@ public class AccountingLedgerApp {
 
     static final String amaniFile = "src/main/resources/transactions.csv";
 
-
     // MAIN this is where Java run, this is where everything starts
 
     public static void main(String[] args) {

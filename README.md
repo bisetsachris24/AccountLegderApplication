@@ -1,7 +1,7 @@
 # Accounting Ledger Application
 
-##  Overview
-The **Accounting Ledger Application** is a Java-based console program designed to help users track financial transactions such as deposits and payments.
+# Overview
+The Accounting Ledger Application is a Java-based console program designed to help users track financial transactions such as deposits and payments.
 
 The application allows users to:
 - Record transactions
