@@ -37,11 +37,26 @@ public class AccountingLedgerApp {
         scanner.close();
     }
 
-    /**
-     * A welcome banner shown once when the program starts.
-     */
     static void printBanner() {
-        System.out.println(" AMANI's LEDGER ");
+        System.out.println("╔══════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                                              ║");
+        System.out.println("║    █████╗ ███╗   ███╗ █████╗ ███╗   ██╗██╗                 ║");
+        System.out.println("║   ██╔══██╗████╗ ████║██╔══██╗████╗  ██║██║                 ║");
+        System.out.println("║   ███████║██╔████╔██║███████║██╔██╗ ██║██║                 ║");
+        System.out.println("║   ██╔══██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║                 ║");
+        System.out.println("║   ██║  ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██║                 ║");
+        System.out.println("║   ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝                 ║");
+        System.out.println("║                                                              ║");
+        System.out.println("║      ██╗     ███████╗██████╗  ██████╗ ███████╗██████╗       ║");
+        System.out.println("║      ██║     ██╔════╝██╔══██╗██╔════╝ ██╔════╝██╔══██╗      ║");
+        System.out.println("║      ██║     █████╗  ██║  ██║██║  ███╗█████╗  ██████╔╝      ║");
+        System.out.println("║      ██║     ██╔══╝  ██║  ██║██║   ██║██╔══╝  ██╔══██╗      ║");
+        System.out.println("║      ███████╗███████╗██████╔╝╚██████╔╝███████╗██║  ██║      ║");
+        System.out.println("║      ╚══════╝╚══════╝╚═════╝  ╚═════╝ ╚══════╝╚═╝  ╚═╝      ║");
+        System.out.println("║                                                              ║");
+        System.out.println("║             Track Every Penny. Own Your Future.         ║");
+        System.out.println("║                                                              ║");
+        System.out.println("╚══════════════════════════════════════════════════════════════╝");
     }
 
 
