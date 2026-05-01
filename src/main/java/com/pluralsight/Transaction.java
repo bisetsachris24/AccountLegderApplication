@@ -18,7 +18,8 @@ public class Transaction {
     private String description;
     private String vendor;
     private double amount;
-   // CONSTRUCTOR
+
+    // CONSTRUCTOR
     // Used to create a new Transaction object with all values
     public Transaction(LocalDate date, LocalTime time, String description,
                        String vendor, double amount) {
@@ -31,16 +32,25 @@ public class Transaction {
     // created getter using constructor
     // Used to safely access private fields from outside the class
 
-    public LocalDate getDate()
-    { return date; }
-    public LocalTime getTime()
-    { return time; }
-    public String    getDescription()
-    { return description; }
-    public String    getVendor()
-    { return vendor; }
-    public double    getAmount()
-    { return amount; }
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
 
 
     // toString METHOD
