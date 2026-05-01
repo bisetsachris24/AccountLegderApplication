@@ -487,7 +487,6 @@ public class AccountingLedgerApp {
     }
 
 
-
     // Prompts the user until they enter a valid positive number
 // This method ensures input is numeric and greater than 0
     static double readPositiveAmount(String prompt) {
